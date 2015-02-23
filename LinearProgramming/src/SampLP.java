@@ -16,8 +16,9 @@ public class SampLP {
 			return new SimplexSolver(lp).solve();
 		} 
 		List<Constraint> V = new ArrayList<Constraint>(lp.getH());
-		double[] x;
+		double[] x = new double[0];
 		while(V.size()>0){
+			System.out.println("while loop aanroep");
 			//r = min{ d sqrt(n), |H\S|}
 			int r = (int) Math.round(Math.min(d*Math.sqrt(n), (double) (lp.getH().size() - S.size())));
 			ArrayList<Constraint> RandS = chooseR(lp.getH(), S, r);
