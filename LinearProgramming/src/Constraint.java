@@ -29,4 +29,15 @@ public class Constraint {
 		return sum <= b;
 	}
 	
+	public String toString() {
+		String result = "";
+		for(int i=0;i<A.length;i++){
+			if(i!=0)
+				result += " +";
+			result += A[i]+"x"+i;
+		}
+		result += " = "+b;
+		return result;
+	}
+	
 }
