@@ -21,5 +21,12 @@ public class Constraint {
 		A = a;
 	}
 	
+	public boolean check(double[] x){
+		int sum = 0;
+		for(int i=0;i<x.length;i++){
+			sum += A[i] * x[i];
+		}
+		return sum <= b;
+	}
 	
 }
