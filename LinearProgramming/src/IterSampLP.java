@@ -18,7 +18,7 @@ public class IterSampLP {
 		int n = lp.getH().size(); //Number of constraints
 		int d = lp.getC().length; //Number of variables
 		if(n < (9*d^2)){
-			return new SimplexSolver(lp).solve();
+			return new SimplexApache(lp).solve();
 		} 
 		
 		List<Constraint> V = new ArrayList<Constraint>(lp.getH());
@@ -28,7 +28,7 @@ public class IterSampLP {
 			int r = (int) 9*d^2;
 			ArrayList<Constraint> R = chooseR(lp.getH(), w,  r);
 			//Recursive call on the instance with constraint set R U S
-			x = new SimplexSolver(new LPInstance(R, lp.getC())).solve();
+			x = new SimplexApache(new LPInstance(R, lp.getC())).solve();
 
 			//V <- {all vertices in H that are violated by the values of x}
 			V.clear();

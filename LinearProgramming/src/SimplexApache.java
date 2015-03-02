@@ -38,7 +38,6 @@ public class SimplexApache {
 
 		// get the solution
 		double min = solution.getValue();
-		System.out.println("Value: "+min);
 		return solution.getPoint();
 	}
 }

@@ -19,7 +19,6 @@ public class SampLP {
 		List<Constraint> V = new ArrayList<Constraint>(lp.getH());
 		double[] x = new double[0];
 		while(V.size()>0){
-			System.out.println("while loop aanroep");
 			//r = min{ d sqrt(n), |H\S|}
 			ArrayList<Constraint> HminS = new ArrayList<Constraint>(lp.getH());
 			HminS.removeAll(S);

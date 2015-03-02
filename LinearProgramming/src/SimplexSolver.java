@@ -29,7 +29,9 @@ public class SimplexSolver {
 	public double[] solve() {
 		try {
 			GRBEnv env = new GRBEnv("lp.log");
+			env.set(GRB.IntParam.OutputFlag, 0);
 			GRBModel model = new GRBModel(env);
+			
 
 			// Create variables
 			model.addVars(null,null,lp.getC(),null,null);

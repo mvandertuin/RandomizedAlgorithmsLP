@@ -33,18 +33,18 @@ public class LPInstance {
 	}
 	
 //  Unused	
-//	public static LPInstance generate(int n, int d){
-//		double[] c =  new double[d];
-//		for(int i=0;i<d;i++)
-//			c[i] = 100.0*Math.random() - 50.0;
-//		ArrayList<Constraint> H = new ArrayList<Constraint>();
-//		for(int i=0;i<n;i++){
-//			double[] a =  new double[d];
-//			for(int j=0;j<d;j++)
-//				a[j] = 100.0*Math.random() - 50.0;
-//			H.add(new Constraint(Math.random()*100, a));
-//		}
-//		return new LPInstance(H, c);
-//	}
+	public static LPInstance generate(int n, int d){
+		double[] c =  new double[d];
+		for(int i=0;i<d;i++)
+			c[i] = 100.0*Math.random() - 50.0;
+		ArrayList<Constraint> H = new ArrayList<Constraint>();
+		for(int i=0;i<n;i++){
+			double[] a =  new double[d];
+			for(int j=0;j<d;j++)
+				a[j] = 100.0*Math.random() - 50.0;
+			H.add(new Constraint(Math.random()*100, a));
+		}
+		return new LPInstance(H, c);
+	}
 
 }
