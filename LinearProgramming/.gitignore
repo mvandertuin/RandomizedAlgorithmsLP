@@ -10,6 +10,9 @@ local.properties
 .settings/
 .loadpath
 
+/bin/*
+!/bin/mps_files/
+
 # Eclipse Core
 .project
 
@@ -33,3 +36,4 @@ local.properties
 
 # TeXlipse plugin
 .texlipse
+
