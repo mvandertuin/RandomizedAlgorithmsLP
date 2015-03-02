@@ -16,18 +16,18 @@ public class SimplexSolverTest {
 		Constraint h2 = new Constraint(b2,A2);
 		
 		ArrayList<Constraint> H = new ArrayList<Constraint>();
-		for(int i = 0 ; i<50; i++){
-			H.add(new Constraint(b2,A2));
-		}
+		//for(int i = 0 ; i<50; i++){
+		//	H.add(new Constraint(b2,A2));
+		//}
 		
 		H.add(h1); H.add(h2);
 		
 		double[] c = {-2,-3,-4};
-		
+		double[] x;
 		LPInstance lp = new LPInstance(H,c);
-		//new SimplexSolver(lp).solve();
-		
-		double[] x = new SampLP(lp).solve();
+		x = new SimplexApache(lp).solve();
+		System.out.println(Arrays.toString(x));
+		x = new SampLP(lp).solve();
 		System.out.println(Arrays.toString(x));
 		
 		
