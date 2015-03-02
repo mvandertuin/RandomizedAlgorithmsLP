@@ -241,6 +241,9 @@ public class MPSParser {
 					break;
 				case SECTION_COLUMNS:
 					String columnName = line.substring(0, line.indexOf(" "));
+					if(line.contains("'MARKER'")){
+						break;
+					}
 					if(!previousColumnName.equalsIgnoreCase(columnName)){
 						n++;
 						previousColumnName = columnName;
@@ -291,9 +294,10 @@ public class MPSParser {
 							}
 							break;
 						case 1:
+							String nextToken = cst.nextToken();
 							//v is the constraint name
 							rowType = rowsTypeMap.get(v);
-							double d1 = new Double(cst.nextToken());
+							double d1 = new Double(nextToken);
 							if(rowType.equalsIgnoreCase(EQUAL)){
 								int rowIndex = -rowsIndexMap.get(v);
 								A.setQuick(rowIndex-1, colIndex, d1);

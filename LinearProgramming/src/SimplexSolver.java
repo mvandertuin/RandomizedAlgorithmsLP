@@ -5,6 +5,16 @@ import java.util.HashMap;
 public class SimplexSolver {
 
 	LPInstance lp;
+	double[] solutionVector;
+	public double[] getSolutionVector() {
+		return solutionVector;
+	}
+
+	public double getSolution() {
+		return solution;
+	}
+
+	double solution;
 
 	public SimplexSolver(LPInstance lp) {
 		this.lp = lp;
@@ -48,19 +58,19 @@ public class SimplexSolver {
 			model.optimize();
 
 
-			double objval = model.get(GRB.DoubleAttr.ObjVal);
+			solution = model.get(GRB.DoubleAttr.ObjVal);
 			
 			//return solution vector x
-			double[] x = new double[lp.getC().length];
+			solutionVector = new double[lp.getC().length];
 			for(int i = 0; i<lp.getC().length; i++){
-				x[i] = model.getVar(i).get(GRB.DoubleAttr.X);
+				solutionVector[i] = model.getVar(i).get(GRB.DoubleAttr.X);
 			}
 			
 			// Dispose of model and environment
 			model.dispose();
 			env.dispose();
 			
-			return x;
+			return solutionVector;
 
 		} catch (GRBException e) {
 			System.out.println("Error code: " + e.getErrorCode() + ". "
