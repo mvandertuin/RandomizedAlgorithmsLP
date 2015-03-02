@@ -10,6 +10,7 @@ public class SampLP {
 	
 	public double[] solve() {
 		List<Constraint> S = new ArrayList<Constraint>();
+		
 		int n = lp.getH().size(); //Number of constraints
 		int d = lp.getC().length; //Number of variables
 		if(n < (9*d^2)){
@@ -20,14 +21,21 @@ public class SampLP {
 		while(V.size()>0){
 			System.out.println("while loop aanroep");
 			//r = min{ d sqrt(n), |H\S|}
-			int r = (int) Math.round(Math.min(d*Math.sqrt(n), (double) (lp.getH().size() - S.size())));
+			ArrayList<Constraint> HminS = new ArrayList<Constraint>(lp.getH());
+			HminS.removeAll(S);
+			int r = (int) Math.round(Math.min(d*Math.sqrt(n), (double) HminS.size()));
+			
 			ArrayList<Constraint> RandS = chooseR(lp.getH(), S, r);
-			RandS.addAll(S);
+			for(Constraint c: S){
+				if(!RandS.contains(c))
+					RandS.add(c);
+			}
 			//Recursive call on the instance with constraint set R U S
 			x = new SampLP(new LPInstance(RandS, lp.getC())).solve();
+
 			//V <- {all vertices in H that are violated by the values of x}
 			V.clear();
-			for(Constraint c: lp.getH()){
+			for(Constraint c: HminS){
 				if(!c.check(x))
 					V.add(c);
 			}
