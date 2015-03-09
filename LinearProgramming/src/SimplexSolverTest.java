@@ -32,11 +32,17 @@ public class SimplexSolverTest {
             	try{
             		System.out.println(file.getName());
     				LPInstance lpi = LPInstance.read(file);
-    				long start = System.nanoTime();
-    				IterSampLP sa = new IterSampLP(lpi);
-    				sa.solve();
-    				long duration = System.nanoTime()-start;
-    				long count = sa.count;
+    				long duration = 0;
+    				long count = 0;
+    				for(int i=0;i<10;i++){
+    					long start = System.nanoTime();
+    					IterSampLP sa = new IterSampLP(lpi);
+    					sa.solve();
+    					duration += System.nanoTime()-start;
+    					count += sa.count;
+    				}
+    				duration /= 10;
+    				count /= 10;
     				System.out.println(duration/1e6);
 	                printWriter.write(file.getName() + ","+lpi.getH().size()+","+lpi.getC().length+"," + ((long) duration/1e6) +"," + count + "\n");
 	                printWriter.flush();			
