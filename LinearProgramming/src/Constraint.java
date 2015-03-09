@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 
 public class Constraint {
 	private static final double epsilon = 1e-6;
@@ -11,6 +13,20 @@ public class Constraint {
 	}
 	public double getB() {
 		return b;
+	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Constraint){
+			Constraint other = (Constraint) obj;
+			if(Arrays.equals(other.getA(),this.getA())){
+				if(other.getB() == this.getB()){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	public void setB(double b) {
 		this.b = b;
