@@ -22,15 +22,15 @@ Abstract here...
 \end{abstract}
 
 \section{Problem introduction}
-The Linear programming problem is concerned with finding the optimum of an objective function limited to a set of constraints. The standard form of a linear program is
+The Linear programming problem is concerned with finding the optimum of an objective function limited to a set of constraints. The standard form of a linear program is written in equation \ref{eq:standard}, with $x$ the vector variables to be determined and $A$ the matrix of constraints that should be less or equal to vector $b$.
 \begin{equation}
+\label{eq:standard}
 \begin{split}
 \text{minimize } & c^t x \\
 \text{subject to } &  Ax\leq b \\
 \text{and } & x \geq 0
 \end{split}
 \end{equation}
-with $x$ the vector variables to be determined and $A$ the matrix of constraints that should be less or equal to vector $b$.
 
 \section{Description of used methods}
 \subsection{Simplex}
