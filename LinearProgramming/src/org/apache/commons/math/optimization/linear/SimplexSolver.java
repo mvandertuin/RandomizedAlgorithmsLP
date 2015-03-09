@@ -38,6 +38,8 @@ public class SimplexSolver extends AbstractLinearOptimizer {
     /** Amount of error to accept in floating point comparisons. */
     protected final double epsilon;
 
+    public long count = 0;
+    
     /**
      * Build a simplex solver with default settings.
      */
@@ -51,6 +53,7 @@ public class SimplexSolver extends AbstractLinearOptimizer {
      */
     public SimplexSolver(final double epsilon) {
         this.epsilon = epsilon;
+        this.count = 0;
     }
 
     /**
@@ -123,7 +126,7 @@ public class SimplexSolver extends AbstractLinearOptimizer {
         throws OptimizationException {
 
         //incrementIterationsCounter();
-
+    	count++;
         Integer pivotCol = getPivotColumn(tableau);
         Integer pivotRow = getPivotRow(tableau, pivotCol);
         if (pivotRow == null) {

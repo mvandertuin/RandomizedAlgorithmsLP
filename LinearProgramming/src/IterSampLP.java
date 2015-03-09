@@ -24,6 +24,7 @@ public class IterSampLP {
 		List<Constraint> V = new ArrayList<Constraint>(lp.getH());
 		double[] x = new double[0];
 		while(V.size()>0){
+			
 			//r = 9d^2
 			int r = (int) 9*d^2;
 			ArrayList<Constraint> R = chooseR(lp.getH(), w,  r);
@@ -61,7 +62,7 @@ public class IterSampLP {
 			int wSum = 0;
 			for(Constraint c: pool)
 				wSum += w.get(c);
-			int pick = (int) Math.random()*wSum;
+			int pick = (int) (Math.random()*wSum);
 			
 			int current = 0;
 			for(Constraint c: pool){

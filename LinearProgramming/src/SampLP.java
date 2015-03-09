@@ -14,7 +14,7 @@ public class SampLP {
 		int n = lp.getH().size(); //Number of constraints
 		int d = lp.getC().length; //Number of variables
 		if(n < (9*d^2)){
-			return new SimplexSolver(lp).solve();
+			return new SimplexApache(lp).solve();
 		} 
 		List<Constraint> V = new ArrayList<Constraint>(lp.getH());
 		double[] x = new double[0];

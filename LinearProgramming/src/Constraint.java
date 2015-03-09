@@ -1,5 +1,6 @@
 
 public class Constraint {
+	private static final double epsilon = 1e-6;
 	double b;
 	double[] A;
 	
@@ -22,11 +23,11 @@ public class Constraint {
 	}
 	
 	public boolean check(double[] x){
-		int sum = 0;
+		double sum = 0;
 		for(int i=0;i<x.length;i++){
 			sum += A[i] * x[i];
 		}
-		return sum <= b;
+		return sum <= b+epsilon;
 	}
 	
 	public String toString() {
