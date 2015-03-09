@@ -12,24 +12,22 @@ import org.apache.commons.math.optimization.linear.Relationship;
 public class SimplexApache {
 	LPInstance lp;
 	public long count;
+	LinearObjectiveFunction f;
+	Collection<LinearConstraint> constraints;
 	
 	public SimplexApache(LPInstance lp){
 		this.lp = lp;
 		this.count  = 0;
+		// describe the optimization problem
+		f = new LinearObjectiveFunction(lp.getC(), 0);
+		constraints = new ArrayList<LinearConstraint>();
+		for(Constraint c: lp.getH())
+			constraints.add(new LinearConstraint(c.getA(), Relationship.LEQ, c.getB()));
+
+	
 	}
 	
 	public double[] solve() {
-		// describe the optimization problem
-		LinearObjectiveFunction f = new LinearObjectiveFunction(lp.getC(), 0);
-		Collection<LinearConstraint> constraints = new ArrayList<LinearConstraint>();
-		for(Constraint c: lp.getH())
-			constraints.add(new LinearConstraint(c.getA(), Relationship.LEQ, c.getB()));
-		//for(int i=0;i<lp.getC().length;i++){
-		//	double[] vars = new double[lp.getC().length];
-		//	vars[i] = 1;
-		//	constraints.add(new LinearConstraint(vars, Relationship.GEQ, 0));
-		//}
-		
 		// create and run the solver
 		org.apache.commons.math.optimization.linear.SimplexSolver solver = new org.apache.commons.math.optimization.linear.SimplexSolver();
 		RealPointValuePair solution = null;
