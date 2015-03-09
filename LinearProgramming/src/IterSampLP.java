@@ -19,7 +19,7 @@ public class IterSampLP {
 		
 		int n = lp.getH().size(); //Number of constraints
 		int d = lp.getC().length; //Number of variables
-		if(n < (9*d^2)){
+		if(n < (9*Math.pow(d,2) )){
 			SimplexApache sa = new SimplexApache(lp);
 			long start = System.nanoTime();
 			double[] ret = sa.solve();
@@ -32,7 +32,7 @@ public class IterSampLP {
 		while(V.size()>0){
 			
 			//r = 9d^2
-			int r = (int) 9*d^2;
+			int r = 9* (int)Math.pow(d, 2);
 			ArrayList<Constraint> R = chooseR(lp.getH(), w,  r);
 			//Recursive call on the instance with constraint set R U S
 			SimplexApache sa = new SimplexApache(new LPInstance(R, lp.getC()));
