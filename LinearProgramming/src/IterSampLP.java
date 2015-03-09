@@ -36,8 +36,9 @@ public class IterSampLP {
 			ArrayList<Constraint> R = chooseR(lp.getH(), w,  r);
 			//Recursive call on the instance with constraint set R U S
 			SimplexApache sa = new SimplexApache(new LPInstance(R, lp.getC()));
+			long start = System.nanoTime();
 			x = sa.solve();
-			this.count += sa.count;
+			this.count += sa.count + (System.nanoTime() - start);
 
 			//V <- {all vertices in H that are violated by the values of x}
 			V.clear();
