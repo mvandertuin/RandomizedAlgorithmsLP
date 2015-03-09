@@ -22,7 +22,7 @@ public class SimplexSolverTest {
 	public static void evaluateInstances(){
 		PrintWriter printWriter = null;
 		try {
-			printWriter = new PrintWriter(new File("LPInstance_test.csv"));
+			printWriter = new PrintWriter(new File("LPInstance_test_itersamplp.csv"));
 		} catch (FileNotFoundException e1) {}
 		File folder = new File("lpinstances");
 
@@ -33,7 +33,7 @@ public class SimplexSolverTest {
             		System.out.println(file.getName());
     				LPInstance lpi = LPInstance.read(file);
     				long start = System.nanoTime();
-    				SimplexApache sa = new SimplexApache(lpi);
+    				IterSampLP sa = new IterSampLP(lpi);
     				sa.solve();
     				long duration = System.nanoTime()-start;
     				long count = sa.count;
@@ -48,6 +48,10 @@ public class SimplexSolverTest {
     			}
             	catch(IllegalArgumentException e){
 	                printWriter.write(file.getName() + "," + "tooLarge" + "\n");
+	                printWriter.flush();			
+            	}
+            	catch(StackOverflowError e){
+	                printWriter.write(file.getName() + "," + "StackOverflow" + "\n");
 	                printWriter.flush();			
             	}
             	catch(Exception e){
