@@ -26,19 +26,21 @@ public class SimplexSolverTest {
 //		double[] c = {-2,-3,-4};
 		
 		List<LPInstance> instances = new ArrayList<LPInstance>();
-		for(int d = 2;d<8;d++){
+		for(int d = 2;d<9;d++){
 			int n = 10*d^3;
 			for(int i=0;i<4;i++){
 				LPInstance lps = LPInstance.generate(n, d);
 				try {
 					new SimplexSolver(lps).solve();
 					instances.add(lps);
-				} catch(Exception e){}
+				} catch(Exception e){i--;}
 			}
 		}
 		System.out.println("****************************");
 		for(LPInstance lp: instances){
 			double[] x;
+			x = new SimplexSolver(lp).solve();
+			System.out.println("Gu: "+Arrays.toString(x));
 			x = new SimplexApache(lp).solve();
 			System.out.println("AP: "+Arrays.toString(x));
 			x = new SampLP(lp).solve();
