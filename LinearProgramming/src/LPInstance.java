@@ -96,7 +96,7 @@ public class LPInstance {
 		
 	}
 
-	public LPInstance read(File f){
+	public static LPInstance read(File f){
 		try{
 		Scanner sc = new Scanner(f);
 		sc.next(); //"constraints"
