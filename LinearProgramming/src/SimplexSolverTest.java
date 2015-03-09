@@ -14,6 +14,12 @@ import com.joptimizer.util.MPSParser;
 public class SimplexSolverTest {
 
 	public static void main(String[] args) {
+		generateInstances();
+		//evaluateInstances();	
+		
+	}
+	
+	public static void evaluateInstances(){
 		PrintWriter printWriter = null;
 		try {
 			printWriter = new PrintWriter(new File("LPInstance_test.csv"));
@@ -52,13 +58,10 @@ public class SimplexSolverTest {
             }
         }
         printWriter.close();
-		
-		
-		
 	}
 	
-	public void genereteInstances(){
-		for(int d = 2;d<9;d++){
+	public static void genereteInstances(){
+		for(int d = 2;d<20;d++){
 			int n = 10*d^3;
 			for(int i=0;i<4;i++){
 				LPInstance lps = LPInstance.generate(n, d);
@@ -70,7 +73,7 @@ public class SimplexSolverTest {
 		}
 	}
 	
-	public void wiki(){
+	public static void wiki(){
 		// Wikipedia example
 		double[] A1 = {3.0,2.0,1.0};
 		double b1 = 10;
