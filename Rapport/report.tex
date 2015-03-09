@@ -32,11 +32,18 @@ The Linear programming problem is concerned with finding the optimum of an objec
 \end{equation}
 with $x$ the vector variables to be determined and $A$ the matrix of constraints that should be less or equal to vector $b$.
 
-A linear programming problem can be solved using the Simplex algorithm. This algorithm uses the standard form as an input and has a time complexity of polynomial time on average, but has a worst-case complexity of exponential time. 
-
 \section{Description of used methods}
+\subsection{Simplex}
+The Simplex algorithm is the most basic algorithm for solving linear programming problems. This algorithm uses the standard form as an input and has a time complexity of polynomial time on average, but has a worst-case complexity of exponential time. 
+
+\subsection{Gurobi Optimizer}
+The Gurobi optimizer is a commercial solver for linear programming problems. It gives several interfaces to use the solver, including Java. Since it belongs to one of the best LP-solvers, it gives the ability of solving self-generated linear programming problems very quickly for checking for feasibility.
+
 \subsection{SampLP}
-The SampLP algorithm (\ref{alg:samplp}) was introduced by Clarkson\cite{clarkson1988vegas}. This Las Vegas algorithm uses random sampling to throw away redundant constraints quickly. It only gives a speed-up for instances with a small dimension: if $n<9d^2$, it calls the Simplex algorithm. 
+The SampLP algorithm (\ref{alg:samplp}) was introduced by Clarkson\cite{clarkson1988vegas}. This randomized Las Vegas algorithm uses random sampling to throw away redundant constraints quickly. It only gives a speed-up for instances with a small dimension: if $n<9d^2$, it calls the Simplex algorithm. 
+
+%TODO: add computational complexity
+
 \begin{algorithm}[h]
 \label{alg:samplp}
 \caption{SampLP}
@@ -64,6 +71,8 @@ $S \gets \phi$\;
 \subsection{IterSampLP}
 The IterSampLP algorithm (\ref{alg:itersamplp}) is an improvement of the SampLP algorithm and was also introduced by Clarkson\cite{clarkson1995vegas}. It uses weighted constraints. For each iterative step it reweights the more interesting constraints to increase the probability of including such a constraint in the random sample.
 
+%TODO: add computational complexity
+
 \begin{algorithm}[h]
 \label{alg:itersamplp}
 \caption{IterSampLP}
@@ -87,8 +96,6 @@ $\forall h \in H, w_h \gets 1$ \;
 }
 \end{algorithm}
 
-
-Including pseudo-code and computational complexity of the methods
 \section{Experimental results}
 %benchmark miplib: which instances to choose?
 
