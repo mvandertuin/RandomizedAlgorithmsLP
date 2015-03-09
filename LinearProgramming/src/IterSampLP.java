@@ -5,9 +5,11 @@ import java.util.Map;
 
 public class IterSampLP {
 	LPInstance lp;
+	long count;
 	
 	public IterSampLP(LPInstance lp){
 		this.lp = lp;
+		this.count = 0;
 	}
 	
 	public double[] solve() {
@@ -18,7 +20,10 @@ public class IterSampLP {
 		int n = lp.getH().size(); //Number of constraints
 		int d = lp.getC().length; //Number of variables
 		if(n < (9*d^2)){
-			return new SimplexApache(lp).solve();
+			SimplexApache sa = new SimplexApache(lp);
+			double[] ret = sa.solve();
+			count += sa.count;
+			return ret;
 		} 
 		
 		List<Constraint> V = new ArrayList<Constraint>(lp.getH());
@@ -29,7 +34,9 @@ public class IterSampLP {
 			int r = (int) 9*d^2;
 			ArrayList<Constraint> R = chooseR(lp.getH(), w,  r);
 			//Recursive call on the instance with constraint set R U S
-			x = new SimplexApache(new LPInstance(R, lp.getC())).solve();
+			SimplexApache sa = new SimplexApache(new LPInstance(R, lp.getC()));
+			x = sa.solve();
+			this.count += sa.count;
 
 			//V <- {all vertices in H that are violated by the values of x}
 			V.clear();

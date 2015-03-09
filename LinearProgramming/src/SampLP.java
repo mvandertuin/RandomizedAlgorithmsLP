@@ -3,9 +3,11 @@ import java.util.List;
 
 public class SampLP {
 	LPInstance lp;
+	public long count;
 	
 	public SampLP(LPInstance lp){
 		this.lp = lp;
+		this.count = 0;
 	}
 	
 	public double[] solve() {
@@ -14,7 +16,10 @@ public class SampLP {
 		int n = lp.getH().size(); //Number of constraints
 		int d = lp.getC().length; //Number of variables
 		if(n < (9*d^2)){
-			return new SimplexApache(lp).solve();
+			SimplexApache sa = new SimplexApache(lp);
+			double[] ret = sa.solve();
+			count = count + sa.count;
+			return ret;
 		} 
 		List<Constraint> V = new ArrayList<Constraint>(lp.getH());
 		double[] x = new double[0];
@@ -30,7 +35,9 @@ public class SampLP {
 					RandS.add(c);
 			}
 			//Recursive call on the instance with constraint set R U S
-			x = new SampLP(new LPInstance(RandS, lp.getC())).solve();
+			SampLP slp =  new SampLP(new LPInstance(RandS, lp.getC()));
+			count += slp.count;
+			x = slp.solve();
 
 			//V <- {all vertices in H that are violated by the values of x}
 			V.clear();
