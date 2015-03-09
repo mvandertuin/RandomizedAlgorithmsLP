@@ -15,7 +15,7 @@ public class SampLP {
 		
 		int n = lp.getH().size(); //Number of constraints
 		int d = lp.getC().length; //Number of variables
-		if(n < (9*d^2)){
+		if(n < (9* Math.pow(d,2))){
 			SimplexApache sa = new SimplexApache(lp);
 			long start = System.nanoTime();
 			double[] ret = sa.solve();
