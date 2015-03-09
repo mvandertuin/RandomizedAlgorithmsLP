@@ -1,4 +1,8 @@
 \documentclass{acm_proc_article-sp}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[algoruled]{algorithm2e}
 
 \begin{document}
 
@@ -7,7 +11,7 @@
 \numberofauthors{2} 
 \author{
 \alignauthor
-Koos van der Linden \\ \affaddr{study number}
+Koos van der Linden \\ \affaddr{4133145}
 % 2nd. author
 \alignauthor
 Marieke van der Tuin \\ \affaddr{4079299}
@@ -18,8 +22,72 @@ Abstract here...
 \end{abstract}
 
 \section{Problem introduction}
-Description of the Linear Programming Problem
+The Linear programming problem is concerned with finding the optimum of an objective function limited to a set of constraints. The standard form of a linear program is
+\begin{equation}
+\begin{split}
+\text{minimize } & c^t x \\
+\text{subject to } &  Ax\leq b \\
+\text{and } & x \geq 0
+\end{split}
+\end{equation}
+with $x$ the vector variables to be determined and $A$ the matrix of constraints that should be less or equal to vector $b$.
+
+A linear programming problem can be solved using the Simplex algorithm. This algorithm uses the standard form as an input and has a time complexity of polynomial time on average, but has a worst-case complexity of exponential time. 
+
 \section{Description of used methods}
+\subsection{SampLP}
+The SampLP algorithm (\ref{alg:samplp}) was introduced by Clarkson\cite{clarkson1988vegas}. This Las Vegas algorithm uses random sampling to throw away redundant constraints quickly. It only gives a speed-up for instances with a small dimension: if $n<9d^2$, it calls the Simplex algorithm. 
+\begin{algorithm}[h]
+\label{alg:samplp}
+\caption{SampLP}
+\KwIn{A set of constraints $H$}
+\KwOut{The optimum $\beta(H)$}
+$S \gets \phi$\;
+\If{$n<9d^2$}{
+	\Return{Simplex($H$)}\;
+}
+\Else{
+	$V \gets H$ \;
+	$S \gets \phi$ \;
+	\While{$|V| > 0$}{
+		Choose $R\subset H\setminus S$ at random, with $|R| = r = min{d*\sqrt{n},|H\setminus S|}$ \;
+		$x \gets SampLP(R\cup S)$ \;
+		$V \gets {h \in H|vertex defined by x violates h}$\;
+		\If{$|V|\leq 2*\sqrt{n}$}{
+			$S \gets S \cup V$ \;
+		}		
+	}
+	\Return{$x$}\;
+}
+\end{algorithm}
+
+\subsection{IterSampLP}
+The IterSampLP algorithm (\ref{alg:itersamplp}) is an improvement of the SampLP algorithm and was also introduced by Clarkson\cite{clarkson1995vegas}. It uses weighted constraints. For each iterative step it reweights the more interesting constraints to increase the probability of including such a constraint in the random sample.
+
+\begin{algorithm}[h]
+\label{alg:itersamplp}
+\caption{IterSampLP}
+\KwIn{A set of constraints $H$}
+\KwOut{The optimum $\beta(H)$}
+$\forall h \in H, w_h \gets 1$ \;
+\If{$n<9d^2$}{
+	\Return{Simplex($H$)}\;
+}
+\Else{
+	$V \gets H$ \;
+	\While{$|V| > 0$}{
+		Choose $R\subset H$ at random, with $|R| = r = 9*d^2$ \;
+		$x \gets Simplex(R)$ \;
+		$V \gets {h \in H|vertex defined by x violates h}$\;
+		\If{$\displaystyle\sum_{h\in V} w_h \leq (2 * \displaystyle\sum_{h \in H} w_h)/(9*d-1)$} {
+			$\forall h \in V, w_h \gets 2*w_h$ \;
+		}		
+	}
+	\Return{$x$}\;
+}
+\end{algorithm}
+
+
 Including pseudo-code and computational complexity of the methods
 \section{Experimental results}
 %benchmark miplib: which instances to choose?
