@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class IterSampLP {
 	LPInstance lp;
-	long count;
+	public long count;
 	
 	public IterSampLP(LPInstance lp){
 		this.lp = lp;
