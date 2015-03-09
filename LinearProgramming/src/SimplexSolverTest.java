@@ -35,8 +35,8 @@ public class SimplexSolverTest {
     				long duration = 0;
     				long count = 0;
     				for(int i=0;i<10;i++){
-    					long start = System.nanoTime();
     					IterSampLP sa = new IterSampLP(lpi);
+    					long start = System.nanoTime();
     					sa.solve();
     					duration += System.nanoTime()-start;
     					count += sa.count;
@@ -71,8 +71,8 @@ public class SimplexSolverTest {
 	}
 	
 	public static void generateInstances(){
-		for(int d = 2;d<50;d++){
-			int n = 10*d^3;
+		for(int d = 2;d<10;d++){
+			int n = 10* ((int) Math.pow(d, 3));
 			for(int i=0;i<4;i++){
 				LPInstance lps = LPInstance.generate(n, d);
 				try {
