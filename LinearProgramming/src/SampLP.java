@@ -17,8 +17,9 @@ public class SampLP {
 		int d = lp.getC().length; //Number of variables
 		if(n < (9*d^2)){
 			SimplexApache sa = new SimplexApache(lp);
+			long start = System.nanoTime();
 			double[] ret = sa.solve();
-			count = count + sa.count;
+			count = count + (System.nanoTime() - start);
 			return ret;
 		} 
 		List<Constraint> V = new ArrayList<Constraint>(lp.getH());
@@ -36,8 +37,8 @@ public class SampLP {
 			}
 			//Recursive call on the instance with constraint set R U S
 			SampLP slp =  new SampLP(new LPInstance(RandS, lp.getC()));
-			count += slp.count;
 			x = slp.solve();
+			count += slp.count;
 
 			//V <- {all vertices in H that are violated by the values of x}
 			V.clear();
