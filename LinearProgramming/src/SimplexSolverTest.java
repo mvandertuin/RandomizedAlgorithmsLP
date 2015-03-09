@@ -14,8 +14,8 @@ import com.joptimizer.util.MPSParser;
 public class SimplexSolverTest {
 
 	public static void main(String[] args) {
-		generateInstances();
-		//evaluateInstances();	
+		//generateInstances();
+		evaluateInstances();	
 		
 	}
 	
@@ -33,12 +33,12 @@ public class SimplexSolverTest {
             		System.out.println(file.getName());
     				LPInstance lpi = LPInstance.read(file);
     				long start = System.nanoTime();
-    				SampLP sa = new SampLP(lpi);
+    				SimplexApache sa = new SimplexApache(lpi);
     				sa.solve();
     				long duration = System.nanoTime()-start;
     				long count = sa.count;
     				System.out.println(duration/1e6);
-	                printWriter.write(file.getName() + "," + ((long) duration/1e6) +"," + count + "\n");
+	                printWriter.write(file.getName() + ","+lpi.getH().size()+","+lpi.getC().length+"," + ((long) duration/1e6) +"," + count + "\n");
 	                printWriter.flush();			
 
     			}
@@ -60,8 +60,8 @@ public class SimplexSolverTest {
         printWriter.close();
 	}
 	
-	public static void genereteInstances(){
-		for(int d = 2;d<20;d++){
+	public static void generateInstances(){
+		for(int d = 2;d<50;d++){
 			int n = 10*d^3;
 			for(int i=0;i<4;i++){
 				LPInstance lps = LPInstance.generate(n, d);
