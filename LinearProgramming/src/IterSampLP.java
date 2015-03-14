@@ -16,7 +16,7 @@ public class IterSampLP {
 		Map<Constraint, Integer> w = new HashMap<Constraint, Integer>(lp.getH().size());
 		for(Constraint c: lp.getH())
 			w.put(c, 1);
-		
+				
 		int n = lp.getH().size(); //Number of constraints
 		int d = lp.getC().length; //Number of variables
 		if(n < (9*Math.pow(d,2) )){
@@ -26,7 +26,7 @@ public class IterSampLP {
 			count += sa.count + (System.nanoTime() - start);
 			return ret;
 		} 
-		
+		// V -> H
 		List<Constraint> V = new ArrayList<Constraint>(lp.getH());
 		double[] x = new double[0];
 		while(V.size()>0){
@@ -59,8 +59,9 @@ public class IterSampLP {
 		for(Constraint c: V)
 			vSum += w.get(c);
 		for(Constraint c: H)
-			hSum = w.get(c);
-		return vSum <= (2*hSum)/(9*d-1);
+			hSum += w.get(c);
+		int res = (2*hSum)/(9*d-1);
+		return vSum <= res;
 	}
 	
 	//Choose rSize constraints randomly from the set H

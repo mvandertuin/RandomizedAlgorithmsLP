@@ -29,8 +29,10 @@ public class SampLP {
 			ArrayList<Constraint> HminS = new ArrayList<Constraint>(lp.getH());
 			HminS.removeAll(S);
 			int r = (int) Math.round(Math.min(d*Math.sqrt(n), (double) HminS.size()));
+			ArrayList<Constraint> copyHminS = new ArrayList<Constraint>(HminS);
+			ArrayList<Constraint> RandS = chooseR(copyHminS, r);
 			
-			ArrayList<Constraint> RandS = chooseR(lp.getH(), S, r);
+			//RandS = RandS \cup S
 			for(Constraint c: S){
 				if(!RandS.contains(c))
 					RandS.add(c);
@@ -56,12 +58,11 @@ public class SampLP {
 	}
 	
 	//Choose rSize constraints randomly from the set H\S
-	private static ArrayList<Constraint> chooseR(List<Constraint> H, List<Constraint> S, int rSize){
+	private static ArrayList<Constraint> chooseR(List<Constraint> pool, int rSize){
 		ArrayList<Constraint> R = new ArrayList<Constraint>();
-		List<Constraint> pool = new ArrayList<Constraint>(H);
-		pool.removeAll(S);
 		while(R.size() < rSize){
-			Constraint c = pool.get((int) Math.random()*pool.size()); 
+			int r = (int) (Math.random()*pool.size());
+			Constraint c = pool.get(r); 
 			R.add(c);
 			pool.remove(c);
 		}

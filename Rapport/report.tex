@@ -22,21 +22,23 @@ Abstract here...
 \end{abstract}
 
 \section{Problem introduction}
-The Linear programming problem is concerned with finding the optimum of an objective function limited to a set of constraints. The standard form of a linear program is
+The Linear programming problem is concerned with finding the optimum of an objective function limited to a set of constraints. The standard form of a linear program is written in equation \ref{eq:standard}, with $x$ the vector variables to be determined and $A$ the matrix of constraints that should be less or equal to vector $b$.
 \begin{equation}
+\label{eq:standard}
 \begin{split}
 \text{minimize } & \mathbf{c}^T \mathbf{x} \\
 \text{subject to } &  \mathbf{Ax} = \mathbf{b} \\
 \text{and } & \mathbf{x} \geq \mathbf{0}
 \end{split}
 \end{equation}
+
 with $\mathbf{x}$ the vector variables to be determined and $\mathbf{A}$ the matrix of constraints that should be equal to vector $\mathbf{b}$. If the constraints are in the form $\mathbf{a}^T \mathbf{x} \leq b$ or $\mathbf{a}^T \mathbf{x} \geq b$, slack variables can be introduced to rewrite the problem to the standard form. 
 
 A linear programming problem can be solved using the Simplex algorithm. This algorithm uses the standard form as an input and has a time complexity of polynomial time on average, but has a worst-case complexity of exponential time. 
 
 \section{Description of used methods}
 \subsection{Simplex}
-The simplex method was introduced by Dantzig in \ref{}. This methods works as follows: \\
+The Simplex algorithm \cite{dantzig1951maximization} is the most basic algorithm for solving linear programming problems. This algorithm uses the standard form as an input and has a time complexity of polynomial time on average, but has a worst-case complexity of exponential time. This methods works as follows: \\
 The set of constraints $H$ (defined by $Ax \leq b$), and the constraint that all variables should be non-negative ($x \geq 0$), define a feasible region. This feasible region is a polytope. In the case of 2 dimensions ($d=2$), this can be easily seen: all area within the lines defined by $H$ and the axes is called the feasible region. \\
 The algorithm can be split in two phases. In phase I, the feasible region is defined, and an initial solution is found (or the algorithm returns because the problem is infeasible. This is the case when the feasible region is empty). In phase II, the program travels along the edges of the feasible region in the direction that minimizes the objective function. It stops when the optimum is found.
 
@@ -49,8 +51,15 @@ The steps for solving an LP instance in standard form are as follows. First a so
 
 
 In each iteration, one row in $A$ is chosen with a non-zero pivot. This row is multiplied so that this pivot becomes one. Then this row is subtracted from all other rows. The result is that all elements in the pivot column (except the pivot itself) become zeros. This pivot-row is chosen in such a way to minimize $Z$, ($Z = \mathbf{c}^T \mathbf{x}$), the top right element in the tableau)). 
+
+\subsection{Gurobi Optimizer}
+The Gurobi optimizer is a commercial solver for linear programming problems. It gives several interfaces to use the solver, including Java. Since it belongs to one of the best LP-solvers, it gives the ability of solving self-generated linear programming problems very quickly for checking for feasibility.
+
 \subsection{SampLP}
-The SampLP algorithm (\ref{alg:samplp}) was introduced by Clarkson\cite{clarkson1988vegas}. This Las Vegas algorithm uses random sampling to throw away redundant constraints quickly. It only gives a speed-up for instances with a small dimension: if $n<9d^2$, it calls the Simplex algorithm. 
+The SampLP algorithm (\ref{alg:samplp}) was introduced by Clarkson\cite{clarkson1988vegas}. This randomized Las Vegas algorithm uses random sampling to throw away redundant constraints quickly. It only gives a speed-up for instances with a small dimension: if $n<9d^2$, it calls the Simplex algorithm. 
+
+%TODO: add computational complexity
+
 \begin{algorithm}[h]
 \label{alg:samplp}
 \caption{SampLP}
@@ -64,9 +73,9 @@ $S \gets \phi$\;
 	$V \gets H$ \;
 	$S \gets \phi$ \;
 	\While{$|V| > 0$}{
-		Choose $R\subset H\setminus S$ at random, with $|R| = r = min{d*\sqrt{n},|H\setminus S|}$ \;
+		Choose $R\subset H\setminus S$ at random, with $|R| = r = min\{d\sqrt{n},|H\setminus S|\}$ \;
 		$x \gets SampLP(R\cup S)$ \;
-		$V \gets {h \in H|vertex defined by x violates h}$\;
+		$V \gets \{h \in H|$vertex defined by $x$ violates $h\}$\;
 		\If{$|V|\leq 2*\sqrt{n}$}{
 			$S \gets S \cup V$ \;
 		}		
@@ -77,6 +86,8 @@ $S \gets \phi$\;
 
 \subsection{IterSampLP}
 The IterSampLP algorithm (\ref{alg:itersamplp}) is an improvement of the SampLP algorithm and was also introduced by Clarkson\cite{clarkson1995vegas}. It uses weighted constraints. For each iterative step it reweights the more interesting constraints to increase the probability of including such a constraint in the random sample.
+
+%TODO: add computational complexity
 
 \begin{algorithm}[h]
 \label{alg:itersamplp}
@@ -92,7 +103,7 @@ $\forall h \in H, w_h \gets 1$ \;
 	\While{$|V| > 0$}{
 		Choose $R\subset H$ at random, with $|R| = r = 9*d^2$ \;
 		$x \gets Simplex(R)$ \;
-		$V \gets {h \in H|vertex defined by x violates h}$\;
+		$V \gets \{h \in H|$vertex defined by $x$ violates $h\}$\;
 		\If{$\displaystyle\sum_{h\in V} w_h \leq (2 * \displaystyle\sum_{h \in H} w_h)/(9*d-1)$} {
 			$\forall h \in V, w_h \gets 2*w_h$ \;
 		}		
@@ -101,8 +112,6 @@ $\forall h \in H, w_h \gets 1$ \;
 }
 \end{algorithm}
 
-
-Including pseudo-code and computational complexity of the methods
 \section{Experimental results}
 %benchmark miplib: which instances to choose?
 
