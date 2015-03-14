@@ -39,18 +39,18 @@ A linear programming problem can be solved using the Simplex algorithm. This alg
 \section{Description of used methods}
 \subsection{Simplex}
 The Simplex algorithm \cite{dantzig1951maximization} is the most basic algorithm for solving linear programming problems. This algorithm uses the standard form as an input and has a time complexity of polynomial time on average, but has a worst-case complexity of exponential time. This methods works as follows: \\
-The set of constraints $H$ (defined by $Ax \leq b$), and the constraint that all variables should be non-negative ($x \geq 0$), define a feasible region. This feasible region is a polytope. In the case of 2 dimensions ($d=2$), this can be easily seen: all area within the lines defined by $H$ and the axes is called the feasible region. \\
+The set of constraints $H$ (defined by $\mathbf{Ax} = \mathbf{b}$), and the constraint that all variables should be non-negative ($x \geq 0$), define a feasible region. This feasible region is a polytope. In the case of 2 dimensions ($d=2$), this can be easily seen: all area within the lines defined by $H$ and the axes is called the feasible region. \\
 The algorithm can be split in two phases. In phase I, the feasible region is defined, and an initial solution is found (or the algorithm returns because the problem is infeasible. This is the case when the feasible region is empty). In phase II, the program travels along the edges of the feasible region in the direction that minimizes the objective function. It stops when the optimum is found.
 
-The steps for solving an LP instance in standard form are as follows. First a so called tableau is formed:
+The steps for solving an LP instance in standard form are as follows. First a so called tableau is formed, in which the first row is the objective function, and the other rows are the constraints:
 \[
 \begin{bmatrix}
 1 & -\mathbf{c}^T & 0 \\
 0 & \mathbf{A} & \mathbf{b}
 \end{bmatrix} \]
 
-
-In each iteration, one row in $A$ is chosen with a non-zero pivot. This row is multiplied so that this pivot becomes one. Then this row is subtracted from all other rows. The result is that all elements in the pivot column (except the pivot itself) become zeros. This pivot-row is chosen in such a way to minimize $Z$, ($Z = \mathbf{c}^T \mathbf{x}$), the top right element in the tableau)). 
+In each iteration, one column and row in $A$ is chosen with a non-zero pivot. This row is multiplied so that this pivot becomes one. Then this row is subtracted from all other rows. The result is that all elements in the pivot column (except the pivot itself) become zeros. This pivot-row is chosen in such a way to minimize $Z$, ($Z = \mathbf{c}^T \mathbf{x}$), the top right element in the tableau)). As soon as all elements in the first row are negative, an optimal solution is found. The top right element of the transformed tableau contains the minimum value. \\
+The values of the variables is determined as follows: with the final tableau, discern basic and non-basic variables. In the final objective function, non-basic variables have a non-zero factor, and the basic variables have a zero factor. The value of all non-basic variables are zero. For the basic variables: find the row with the only $1$ in the column (the rest is all zero's). The last element in this row (in the transformed $\mathbf{b}$ vector, is the value for this basic variable.
 
 \subsection{Gurobi Optimizer}
 The Gurobi optimizer is a commercial solver for linear programming problems. It gives several interfaces to use the solver, including Java. Since it belongs to one of the best LP-solvers, it gives the ability of solving self-generated linear programming problems very quickly for checking for feasibility.
