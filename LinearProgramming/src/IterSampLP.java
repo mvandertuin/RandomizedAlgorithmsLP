@@ -3,13 +3,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class IterSampLP {
+public class IterSampLP implements LPSolver {
 	LPInstance lp;
-	public long count;
+	private long simplexDuration;
 	
 	public IterSampLP(LPInstance lp){
 		this.lp = lp;
-		this.count = 0;
+		this.simplexDuration = 0;
+	}
+	
+	public long getSimplexDuration(){
+		return simplexDuration;
 	}
 	
 	public double[] solve() {
@@ -23,7 +27,7 @@ public class IterSampLP {
 			SimplexApache sa = new SimplexApache(lp);
 			long start = System.nanoTime();
 			double[] ret = sa.solve();
-			count += sa.count + (System.nanoTime() - start);
+			simplexDuration += sa.getSimplexDuration() + (System.nanoTime() - start);
 			return ret;
 		} 
 		// V -> H
@@ -38,7 +42,7 @@ public class IterSampLP {
 			SimplexApache sa = new SimplexApache(new LPInstance(R, lp.getC()));
 			long start = System.nanoTime();
 			x = sa.solve();
-			this.count += sa.count + (System.nanoTime() - start);
+			this.simplexDuration += sa.getSimplexDuration() + (System.nanoTime() - start);
 
 			//V <- {all vertices in H that are violated by the values of x}
 			V.clear();

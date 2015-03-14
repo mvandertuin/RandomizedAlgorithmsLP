@@ -1,13 +1,17 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class SampLP {
+public class SampLP implements LPSolver {
 	LPInstance lp;
-	public long count;
+	private long simplexDuration;
 	
 	public SampLP(LPInstance lp){
 		this.lp = lp;
-		this.count = 0;
+		this.simplexDuration = 0;
+	}
+	
+	public long getSimplexDuration(){
+		return simplexDuration;
 	}
 	
 	public double[] solve() {
@@ -19,7 +23,7 @@ public class SampLP {
 			SimplexApache sa = new SimplexApache(lp);
 			long start = System.nanoTime();
 			double[] ret = sa.solve();
-			count = count + (System.nanoTime() - start);
+			simplexDuration = simplexDuration + (System.nanoTime() - start);
 			return ret;
 		} 
 		List<Constraint> V = new ArrayList<Constraint>(lp.getH());
@@ -40,7 +44,7 @@ public class SampLP {
 			//Recursive call on the instance with constraint set R U S
 			SampLP slp =  new SampLP(new LPInstance(RandS, lp.getC()));
 			x = slp.solve();
-			count += slp.count;
+			simplexDuration += slp.simplexDuration;
 
 			//V <- {all vertices in H that are violated by the values of x}
 			V.clear();

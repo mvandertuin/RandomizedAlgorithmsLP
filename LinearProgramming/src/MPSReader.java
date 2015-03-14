@@ -28,7 +28,7 @@ public class MPSReader {
 	            		m.parse(file);
 	            		lps.toStandardForm(m.getC(), m.getG(), m.getH(), m.getA(), m.getB(), m.getLb(), m.getUb());
 	    				LPInstance lpi = transformToLPInstance(lps);
-	    				SimplexSolver ss = new SimplexSolver(lpi);
+	    				SimplexGurobi ss = new SimplexGurobi(lpi);
 	    				ss.solve();
 		                printWriter.write(file.getName() + " " + ss.getSolution() + "\n");
 		                printWriter.flush();			

@@ -9,22 +9,24 @@ import org.apache.commons.math.optimization.linear.LinearObjectiveFunction;
 import org.apache.commons.math.optimization.linear.Relationship;
 
 
-public class SimplexApache {
+public class SimplexApache implements LPSolver {
 	LPInstance lp;
-	public long count;
+	private long simplexDuration;
 	LinearObjectiveFunction f;
 	Collection<LinearConstraint> constraints;
 	
 	public SimplexApache(LPInstance lp){
 		this.lp = lp;
-		this.count  = 0;
+		this.simplexDuration  = 0;
 		// describe the optimization problem
 		f = new LinearObjectiveFunction(lp.getC(), 0);
 		constraints = new ArrayList<LinearConstraint>();
 		for(Constraint c: lp.getH())
 			constraints.add(new LinearConstraint(c.getA(), Relationship.LEQ, c.getB()));
-
+	}
 	
+	public long getSimplexDuration(){
+		return simplexDuration;
 	}
 	
 	public double[] solve() {
@@ -39,7 +41,7 @@ public class SimplexApache {
 
 		// get the solution
 		double min = solution.getValue();
-		count = solver.count;
+		simplexDuration = solver.count;
 		return solution.getPoint();
 	}
 }

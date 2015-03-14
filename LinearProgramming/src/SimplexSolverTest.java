@@ -12,7 +12,8 @@ import com.joptimizer.util.MPSParser;
 
 
 public class SimplexSolverTest {
-
+	private static final int repetitions = 100;
+	
 	public static void main(String[] args) {
 		//generateInstances();
 		evaluateInstances();	
@@ -22,32 +23,42 @@ public class SimplexSolverTest {
 	public static void evaluateInstances(){
 		PrintWriter printWriter = null;
 		try {
-			printWriter = new PrintWriter(new File("LPInstance_test_itersamplp.csv"));
+			printWriter = new PrintWriter(new File("LPInstance_test.csv"));
 		} catch (FileNotFoundException e1) {}
 		File folder = new File("lpinstances");
-
+		printWriter.write("Instance,n,d,Apache total, Apache Simplex, SampLP total, SampLP Simplex, IterSampLP total, IterSampLP Simplex\n");
         File[] listOfFiles = folder.listFiles();
         for (File file : listOfFiles) {
             if (file.isFile()) {
             	try{
             		System.out.println(file.getName());
     				LPInstance lpi = LPInstance.read(file);
-    				long duration = 0;
-    				long count = 0;
-    				for(int i=0;i<100;i++){
-    					IterSampLP sa = new IterSampLP(lpi);
-    					long start = System.nanoTime();
-    					sa.solve();
-    					duration += System.nanoTime()-start;
-    					System.out.println(sa.count/1e6);
-    					count += sa.count;
+    				printWriter.write(file.getName() + ","+lpi.getH().size()+","+lpi.getC().length+",");
+    				
+    				long[] duration = new long[3];
+    				long[] simplexDuration = new long[3];
+    				for(int i=0;i<repetitions;i++){
+    					LPSolver[] solvers = new LPSolver[3];
+        				solvers[0] = new SimplexApache(lpi);
+        				solvers[1] = new SampLP(lpi);
+        				solvers[2] = new IterSampLP(lpi);
+        				for(int j=0;j<3;j++){
+        					LPSolver solver = solvers[j];
+	    					long start = System.nanoTime();
+	    					double[] x = solver.solve();
+	    					duration[j] += System.nanoTime()-start;
+	    					simplexDuration[j] += solver.getSimplexDuration();
+	    					System.out.println(j+": "+Arrays.toString(x)+", "+((long) (solver.getSimplexDuration())));
+        				}
     				}
-    				duration /= 100;
-    				count /= 100;
-    				System.out.println(duration/1e6);
-	                printWriter.write(file.getName() + ","+lpi.getH().size()+","+lpi.getC().length+"," + ((long) duration/1e6) +"," + ((long) count/1e6) + "\n");
-	                printWriter.flush();			
-
+    				for(int j=0;j<3;j++){
+    					duration[j] /= repetitions*1e3;
+    					simplexDuration[j] /= repetitions*1e3;
+    				}
+    				printWriter.write(duration[0]+","+simplexDuration[0]+",");
+    				printWriter.write(duration[1]+","+simplexDuration[1]+",");
+    				printWriter.write(duration[2]+","+simplexDuration[2]+"\n");
+	                printWriter.flush();				
     			}
     			catch(OutOfMemoryError e){ 
 	                printWriter.write(file.getName() + "," + "heapSpace" + "\n");
@@ -77,7 +88,7 @@ public class SimplexSolverTest {
 			for(int i=0;i<4;i++){
 				LPInstance lps = LPInstance.generate(n, d);
 				try {
-					new SimplexSolver(lps).solve();
+					new SimplexGurobi(lps).solve();
 					lps.save(new File("lpinstances/n"+n+"_d"+d+"_"+i+".txt"));
 				} catch(Exception e){i--;}
 			}
