@@ -87,7 +87,7 @@ $S \gets \phi$\;
 		Choose $R\subset H\setminus S$ at random, with $|R| = r = min\{d\sqrt{n},|H\setminus S|\}$ \;
 		$x \gets SampLP(R\cup S)$ \;
 		$V \gets \{h \in H|$vertex defined by $x$ violates $h\}$\;
-		\If{$|V|\leq 2*\sqrt{n}$}{
+		\If{$|V|\leq 2 \sqrt{n}$}{
 			$S \gets S \cup V$ \;
 		}		
 	}
@@ -112,11 +112,11 @@ $\forall h \in H, w_h \gets 1$ \;
 \Else{
 	$V \gets H$ \;
 	\While{$|V| > 0$}{
-		Choose $R\subset H$ at random, with $|R| = r = 9*d^2$ \;
+		Choose $R\subset H$ at random, with $|R| = r = 9d^2$ \;
 		$x \gets Simplex(R)$ \;
 		$V \gets \{h \in H|$vertex defined by $x$ violates $h\}$\;
-		\If{$\displaystyle\sum_{h\in V} w_h \leq (2 * \displaystyle\sum_{h \in H} w_h)/(9*d-1)$} {
-			$\forall h \in V, w_h \gets 2*w_h$ \;
+		\If{$\displaystyle\sum_{h\in V} w_h \leq (2 \displaystyle\sum_{h \in H} w_h)/(9d-1)$} {
+			$\forall h \in V, w_h \gets 2w_h$ \;
 		}		
 	}
 	\Return{$x$}\;
@@ -167,6 +167,50 @@ ger50\_17\_trans & 499  & 22,641 & 128,743 \\ \hline
 \end{figure}
 
 %aantal iteraties binnen simplexApache voor sampleLP & iterSampLP
+For comparing the performance of SimplexApache, SampLP and IterSamLP, the following method is used. First a set of problem instances was randomly generated, with $d$ ranging from $2$ to $9$, and with $n = 10d^3$, so $n > 9d^2$ always holds. For each value of $d$, four linear programming problems were generated. For the random methods, the algorithm was repeated $100$ times, to calculate an average runtime. Runtime is measured in two ways: the total runtime and the simplex runtime. Because SampLP and IterSampLP both call Simplex for small instances of the original problem. By measuring the time Simplex is running, a comparison can be made that is less dependent on the implementation of SampLP and IterSampLP. \\
+The results can be seen in table \ref{tab:relativeresults} and the corresponding figures \ref{fig:simplexruntim}, \ref{fig:simplexruntime_relative_simplex} and \ref{fig:totalruntime}.
+
+\begin{table*}
+\label{tab:relativeresults}
+\centering
+\caption{The runtime results (in microseconds) for SimplexApache, SampLP and IterSampLP on randomly generated linear programming problems with $d$ ranging from $2$ to $9$ and $n = 10d^3$. The runtime is an average over $100$ repetitions. A distinction is made between total runtime and the time that Simplex is running.}
+\begin{tabular}{|l|l|l|l|l|l|l|l|} 
+\hline
+\#       & n    & d & SimplexApache & SampLP total & SampLP Simplex & IterSampLP total & IterSampLP Simplex \\ \hline
+1        & 80   & 2 & 31                                                       & 25           & 10             & 127              & 13                 \\ \hline
+2        & 80   & 2 & 106                                                      & 57           & 30             & 255              & 54                 \\ \hline
+3        & 80   & 2 & 31                                                       & 25           & 9              & 135              & 14                 \\ \hline
+4        & 80   & 2 & 31                                                       & 25           & 10             & 128              & 14                 \\ \hline
+1        & 270  & 3 & 3518                                                     & 843          & 482            & 6767             & 1663               \\ \hline
+2        & 270  & 3 & 2498                                                     & 627          & 314            & 4419             & 773                \\ \hline
+3        & 270  & 3 & 1249                                                     & 449          & 189            & 2677             & 404                \\ \hline
+4        & 270  & 3 & 2591                                                     & 681          & 353            & 5213             & 958                \\ \hline
+1        & 640  & 4 & 24974                                                    & 3044         & 1815           & 27322            & 4874               \\ \hline
+2        & 640  & 4 & 23685                                                    & 2223         & 1317           & 19794            & 3663               \\ \hline
+3        & 640  & 4 & 12578                                                    & 2169         & 1250           & 18999            & 3526               \\ \hline
+4        & 640  & 4 & 17826                                                    & 2374         & 1348           & 25389            & 4220               \\ \hline
+1        & 1250 & 5 & 91605                                                    & 8571         & 3663           & 93396            & 8672               \\ \hline
+2        & 1250 & 5 & 190610                                                   & 17437        & 10941          & 189220           & 38456              \\ \hline
+3        & 1250 & 5 & 5599                                                     & 2080         & 181            & 17335            & 234                \\ \hline
+4        & 1250 & 5 & 59826                                                    & 6676         & 2950           & 75248            & 8101               \\ \hline
+1        & 2160 & 6 & 266887                                                   & 24334        & 13178          & 301377           & 43118              \\ \hline
+2        & 2160 & 6 & 269059                                                   & 24017        & 13366          & 291398           & 45011              \\ \hline
+3        & 2160 & 6 & 434566                                                   & 21049        & 11186          & 231637           & 25728              \\ \hline
+4        & 2160 & 6 & 182747                                                   & 17205        & 8382           & 192605           & 22020              \\ \hline
+1        & 3430 & 7 & 1402486                                                  & 56464        & 31761          & 650137           & 86166              \\ \hline
+2        & 3430 & 7 & 805804                                                   & 57138        & 29486          & 685525           & 85931              \\ \hline
+3        & 3430 & 7 & 1209336                                                  & 55658        & 27997          & 753164           & 86389              \\ \hline
+4        & 3430 & 7 & 1349811                                                  & 67305        & 35871          & 950145           & 130263             \\ \hline
+1        & 5120 & 8 & 2087614                                                  & 86721        & 32143          & 1428837          & 130015             \\ \hline
+2        & 5120 & 8 & 2891915                                                  & 87656        & 36512          & 1643975          & 171009             \\ \hline
+3        & 5120 & 8 & 1170917                                                  & 71039        & 28429          & 797186           & 68344              \\ \hline
+4        & 5120 & 8 & 1545349                                                  & 78305        & 23893          & 1470287          & 101232             \\ \hline
+1        & 7290 & 9 & 8944001                                                  & 252987       & 95365          & 5591116          & 751477             \\ \hline
+2        & 7290 & 9 & 3770595                                                  & 171645       & 31653          & 4177553          & 267840             \\ \hline
+3        & 7290 & 9 & 2190897                                                  & 171699       & 28134          & 3349625          & 210678             \\ \hline
+4        & 7290 & 9 & 4572966                                                  & 201903       & 45554          & 4859949          & 348285             \\ \hline
+\end{tabular}
+\end{table*}
 
 
 \section{Analysis of results}
@@ -180,4 +224,5 @@ Compare between methods: runtime and asymptotic bounds.
 \bibliographystyle{abbrv}
 \bibliography{sigproc}  % sigproc.bib is the name of the Bibliography in this case
 \balancecolumns
+
 \end{document}
