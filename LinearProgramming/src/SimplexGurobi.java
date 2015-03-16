@@ -1,11 +1,20 @@
 import gurobi.*;
 
-import java.util.HashMap;
-
-public class SimplexGurobi {
+/**
+ * Solves the LP by using the Gurobi model. The relaxation is obtained by
+ * having continuous variables between 0 and 1 instead of discrete vars
+ * Result is stored in solution.
+ */
+public class SimplexGurobi implements LPSolver {
 
 	LPInstance lp;
 	double[] solutionVector;
+	double solution;
+
+	public SimplexGurobi(LPInstance lp) {
+		this.lp = lp;
+	}
+
 	public double[] getSolutionVector() {
 		return solutionVector;
 	}
@@ -14,24 +23,14 @@ public class SimplexGurobi {
 		return solution;
 	}
 
-	double solution;
 
-	public SimplexGurobi(LPInstance lp) {
-		this.lp = lp;
-	}
-
-	/**
-	 * Solves the LP by using the Gurobi model. The relaxation is obtained by
-	 * having continuous variables between 0 and 1 instead of discrete vars
-	 * Result is stored in solution.
-	 */
-
+	@Override
 	public double[] solve() {
 		try {
 			GRBEnv env = new GRBEnv("lp.log");
 			env.set(GRB.IntParam.OutputFlag, 0);
 			GRBModel model = new GRBModel(env);
-			
+
 
 			// Create variables
 			model.addVars(null,null,lp.getC(),null,null);
@@ -61,17 +60,17 @@ public class SimplexGurobi {
 
 
 			solution = model.get(GRB.DoubleAttr.ObjVal);
-			
+
 			//return solution vector x
 			solutionVector = new double[lp.getC().length];
 			for(int i = 0; i<lp.getC().length; i++){
 				solutionVector[i] = model.getVar(i).get(GRB.DoubleAttr.X);
 			}
-			
+
 			// Dispose of model and environment
 			model.dispose();
 			env.dispose();
-			
+
 			return solutionVector;
 
 		} catch (GRBException e) {
@@ -79,6 +78,11 @@ public class SimplexGurobi {
 					+ e.getMessage());
 			return new double[0];
 		}
+	}
+
+	@Override
+	public long getSimplexDuration() {
+		return 0;
 	}
 
 }
