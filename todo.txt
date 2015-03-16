@@ -1,0 +1,8 @@
+TODO:
+
+M - runtime IterSampLP + SampLP
+K - Abstract
+K - Conclusion
+M - Analysis of Results
+M - Plaatjes op de juiste plek etc
+K - Introduction type problemen
