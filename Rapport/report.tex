@@ -175,7 +175,13 @@ The SampLP performs in our experiments better than IterSampLP. This is as expect
 
 It has been shown that the randomized algorithms give an enormous speed-up compared to the Apache Simplex implementation. It is therefore useful to use the randomized versions. However, the presented randomized algorithms do not work for all instances. It only gives a speed-up if $n>9d^2$. Else, the Simplex algorithm is called immediately. This requires very specific problem instances with small dimensions. The smallest enclosing circle problems are for example perfectly solvable with randomized algorithms.
 
-Although randomized algorithms provide a speed-up, a professional LP solver like Gurobi still performs faster for instances with a large $n$. The randomized algorithms can be improved by using the Gurobi solver instead of calling the Simplex algorithm. If then the runtime is plotted, \textbf{TODO grafiekjes}
+Although randomized algorithms provide a speed-up, a professional LP solver like Gurobi still performs faster for instances with a large $n$. The randomized algorithms might be improved by using the Gurobi solver instead of calling the Simplex algorithm. For larger $n$ this should give a speed-up, since the Gurobi solver should be more optimized than a general Simplex optimization. If then the runtime of the randomized algorithms and Gurobi is plotted \ref{fig:gurobiruntime}, it can be seen that Gurobi still performs better than the randomized algorithms. Concluding: the randomized algorithms do not outperform a professional solver like Gurobi (for large $n$). 
+
+\begin{figure}[h!]
+\includegraphics[width=\columnwidth]{../Results/gurobi_runtime.pdf}
+\caption{Runtime results for Gurobi, SampLP and IterSampLP on the randomly generated problems. SampLP and IterSampLP use Gurobi instead of Simplex for obtaining an optimal solution}
+\label{fig:gurobiruntime}
+\end{figure}
 
 \section{Conclusions}
 
