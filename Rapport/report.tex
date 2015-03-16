@@ -3,6 +3,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage[algoruled]{algorithm2e}
+\usepackage{tabularx}
 
 %Remove the box from the bottom left from the template
 \makeatletter
@@ -124,6 +125,33 @@ $\forall h \in H, w_h \gets 1$ \;
 
 \section{Experimental results}
 %benchmark miplib: which instances to choose?
+To test the performance of the three algorithms, two different methods are used. Because the simplex implementation is used by the two other methods, this algorithm is first tested  on a benchmark of linear programming instances. For this purpose, the benchmark MIPLIB 2010 \cite{KochEtAl2011} is used. Unfortunately, this benchmark could not be used to test the performance of SampLP and IterSampLP, because for all instances in this benchmark $n < 9d^2$. \\
+To test the performance of these two, a linear programming problem generator is used. This generator generates problems with uniformly random constraints and a random objective function. The feasibility of this generated problem is tested with Gurobi, and feasible instances are stored for later use. \\
+In this section the results of the runtime of simplex on the MIPLIB benchmark is shown first, and then the results of the runtime of the three methods on the randomly generated instances.
+
+
+\begin{table}[h!]
+\label{tab:miplibresults}
+\caption{Runtime results for SimplexApache on instances of MIPLIB 2010 \cite{KochEtAl2011}}
+\begin{tabularx}{\columnwidth}{|X|r|r|r|}
+\hline
+Problem Name     & $n$  & $d$   & $t$ (ms) \\ \hline
+30n20b8          & 576  & 18866 & 3641   \\ \hline
+50v-10           & 233  & 2196  & 3666   \\ \hline
+acc-tight4       & 3285 & 4608  & 174289 \\ \hline
+acc-tight5       & 3052 & 4114  & 160245 \\ \hline
+acc-tight6       & 3047 & 4105  & 98612  \\ \hline
+beasleyC3        & 1750 & 3750  & 182036 \\ \hline
+cov1075          & 637  & 757   & 64453  \\ \hline
+enlight13        & 169  & 338   & 36     \\ \hline
+enlight14        & 196  & 392   & 17     \\ \hline
+enlight15        & 225  & 450   & 21     \\ \hline
+enlight16        & 256  & 512   & 22     \\ \hline
+enlight9         & 81   & 162   & 3      \\ \hline
+g200x740i        & 940  & 2220  & 41186  \\ \hline
+ger50\_17\_trans & 499  & 22641 & 128743 \\ \hline
+\end{tabularx}
+\end{table}
 
 %runtime [ms] op benchmark instances (x-as=#of constraints en x-as=#of vars)
 %aantal iteraties binnen simplexApache voor sampleLP & iterSampLP
