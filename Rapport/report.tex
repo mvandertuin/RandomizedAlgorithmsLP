@@ -130,6 +130,55 @@ To test the performance of these two, a linear programming problem generator is 
 In this section the results of the runtime of simplex on the MIPLIB benchmark is shown first, and then the results of the runtime of the three methods on the randomly generated instances.
 
 The runtime results for SimplexApache on instances of MIPLIB can be seen in table \ref{tab:miplibresults} and in figure \ref{fig:miplibresults_n} and \ref{fig:miplibresults_d}. Only a small subset of the benchmark is used to test the performance of SimplexApache. The choice of this subset was based upon problem size, and alphabetic order. 
+
+\begin{figure}[h!]
+\includegraphics[width=\columnwidth]{../Results/miplib_apache_n.pdf}
+\caption{Runtime results for SimplexApache on instances of MIPLIB 2010 \cite{KochEtAl2011} compared to the number of constraints: $n$}
+\label{fig:miplibresults_n}
+\end{figure}
+\begin{figure}[h!]
+\includegraphics[width=\columnwidth]{../Results/miplib_apache_d.pdf}
+\caption{Runtime results for SimplexApache on instances of MIPLIB 2010 \cite{KochEtAl2011} compared to the number of variables: $d$}
+\label{fig:miplibresults_d}
+\end{figure}
+
+%aantal iteraties binnen simplexApache voor sampleLP & iterSampLP
+For comparing the performance of SimplexApache, SampLP and IterSamLP, the following method is used. First a set of feasible problem instances was randomly generated, with $d$ ranging from $2$ to $9$, and with $n = 10d^3$, so $n > 9d^2$ always holds. For each value of $d$, four linear programming problems were generated. For the random methods, the algorithm was repeated $100$ times, to calculate an average runtime. Runtime is measured in two ways: the total runtime and the simplex runtime. Because SampLP and IterSampLP both call Simplex for small instances of the original problem. By measuring the time Simplex is running, a comparison can be made that is less dependent on the implementation of SampLP and IterSampLP. \\
+The results can be seen in table \ref{tab:relativeresults} and the corresponding figures \ref{fig:totalruntime}, \ref{fig:simplexruntime} and \ref{fig:simplexruntime_relative_simplex}. In the figures, the runtime is only compared with $n$, the number of constraints and no longer with $d$. This is because $n$ depends on $d$. With this set of problems, only small values for $d$ are taken into account.
+
+\begin{figure}[h!]
+\includegraphics[width=\columnwidth]{../Results/totalruntime.pdf}
+\caption{Runtime results for SimplexApache, SampLP and IterSampLP on the randomly generated problems. The total runtime is measured.}
+\label{fig:totalruntime}
+\end{figure}
+
+\begin{figure}[h!]
+\includegraphics[width=\columnwidth]{../Results/runtime_Simplex.pdf}
+\caption{Runtime results for SimplexApache, SampLP and IterSampLP on the randomly generated problems. Only the time Simplex is running is measured.}
+\label{fig:simplexruntime}
+\end{figure}
+
+\begin{figure}[h!]
+\includegraphics[width=\columnwidth]{../Results/simplexruntime_relative_simplex.pdf}
+\caption{Runtime results for SimplexApache, SampLP and IterSampLP on the randomly generated problems. Only the time Simplex is running is measured. The runtime of SampLP and IterSampLP is plotted against the runtime of SimplexApache as a percentage.}
+\label{fig:simplexruntime_relative_simplex}
+\end{figure}
+
+
+
+\section{Analysis of results}
+Compare between methods: runtime and asymptotic bounds.
+
+\section{Discussion of the benefit of randomization for the problem}
+
+\section{Conclusions}
+
+
+\bibliographystyle{abbrv}
+\bibliography{sigproc}  % sigproc.bib is the name of the Bibliography in this case
+\balancecolumns
+
+\appendix
 \begin{table}[h!]
 \label{tab:miplibresults}
 \caption{Runtime results for SimplexApache on instances of MIPLIB 2010 \cite{KochEtAl2011}}
@@ -154,21 +203,6 @@ g200x740i        & 940  & 2,220  & 41,186  \\ \hline
 ger50\_17\_trans & 499  & 22,641 & 128,743 \\ \hline
 \end{tabularx}
 \end{table}
-
-\begin{figure}[h!]
-\includegraphics[width=\columnwidth]{../Results/miplib_apache_n.pdf}
-\caption{Runtime results for SimplexApache on instances of MIPLIB 2010 \cite{KochEtAl2011} compared to the number of constraints: $n$}
-\label{fig:miplibresults_n}
-\end{figure}
-\begin{figure}[h!]
-\includegraphics[width=\columnwidth]{../Results/miplib_apache_d.pdf}
-\caption{Runtime results for SimplexApache on instances of MIPLIB 2010 \cite{KochEtAl2011} compared to the number of variables: $d$}
-\label{fig:miplibresults_d}
-\end{figure}
-
-%aantal iteraties binnen simplexApache voor sampleLP & iterSampLP
-For comparing the performance of SimplexApache, SampLP and IterSamLP, the following method is used. First a set of problem instances was randomly generated, with $d$ ranging from $2$ to $9$, and with $n = 10d^3$, so $n > 9d^2$ always holds. For each value of $d$, four linear programming problems were generated. For the random methods, the algorithm was repeated $100$ times, to calculate an average runtime. Runtime is measured in two ways: the total runtime and the simplex runtime. Because SampLP and IterSampLP both call Simplex for small instances of the original problem. By measuring the time Simplex is running, a comparison can be made that is less dependent on the implementation of SampLP and IterSampLP. \\
-The results can be seen in table \ref{tab:relativeresults} and the corresponding figures \ref{fig:simplexruntim}, \ref{fig:simplexruntime_relative_simplex} and \ref{fig:totalruntime}.
 
 \begin{table*}
 \label{tab:relativeresults}
@@ -212,17 +246,5 @@ The results can be seen in table \ref{tab:relativeresults} and the corresponding
 \end{tabular}
 \end{table*}
 
-
-\section{Analysis of results}
-Compare between methods: runtime and asymptotic bounds.
-
-\section{Discussion of the benefit of randomization for the problem}
-
-\section{Conclusions}
-
-
-\bibliographystyle{abbrv}
-\bibliography{sigproc}  % sigproc.bib is the name of the Bibliography in this case
-\balancecolumns
 
 \end{document}
