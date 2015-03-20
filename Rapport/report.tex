@@ -24,7 +24,7 @@ Marieke van der Tuin \\ \affaddr{4079299}
 }
 \maketitle
 \begin{abstract}
-Abstract here...
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce elementum odio nibh, sed pellentesque ex vehicula eu. In sed nulla malesuada, molestie magna gravida, elementum diam. Vivamus a faucibus ipsum. Mauris auctor suscipit lacus, vitae sagittis lectus interdum in. Duis vitae justo tincidunt, porta est id, pellentesque urna. Vivamus in lorem elementum, elementum nisl eu, porttitor erat. Duis massa nulla, rhoncus at dapibus ac, pretium at urna. Nulla egestas leo metus. Vivamus ut ullamcorper augue. Pellentesque scelerisque ligula vel nisi vehicula volutpat. Nunc vulputate commodo risus vel lobortis. Nam venenatis felis sollicitudin nisl porttitor, a congue tortor rhoncus. Aliquam blandit orci tellus, et pellentesque metus sodales in. 
 \end{abstract}
 
 \section{Problem introduction}
@@ -41,7 +41,6 @@ The Linear programming problem is concerned with finding the optimum of an objec
 with $\mathbf{x}$ the vector variables to be determined and $\mathbf{A}$ the matrix of constraints that should be equal to vector $\mathbf{b}$. If the constraints are in the form $\mathbf{a}^T \mathbf{x} \leq b$ or $\mathbf{a}^T \mathbf{x} \geq b$, slack variables can be introduced to rewrite the problem to the standard form. 
 
 In this report, three algorithms that solve linear programming problems are examined: Simplex, SampLP, and IterSampLP. The last two of these are randomized algorithms. Simplex is the oldest of these algorithms. This algorithm uses the standard form as an input and has a time complexity of polynomial time on average, but has a worst-case complexity of exponential time. How do SampLP and IterSampLP compare with this? It is expected that these algorithms will perform better on instances with small dimension (the number of variables) and large number of constraints. 
-
 
 \section{Description of used methods}
 Three methods are compared  in this report: Simplex, the only deterministic method, and SampLP, a recursive randomized algorithm, and IterSampLP, an iterative randomized algorithm.
@@ -68,9 +67,9 @@ For testing purposes, two implementations of Simplex were used: Gurobi, and Apac
 Gurobi is used to determine the feasibility of randomly generated linear programming instances. Apache is used to compare the run time with the two randomized algorithms. Apache is also used in these algorithms, when Simplex is called.
 
 \subsection{SampLP}
-The SampLP algorithm (\ref{alg:samplp}) was introduced by Clarkson\cite{clarkson1988vegas}. This randomized Las Vegas algorithm uses random sampling to throw away redundant constraints quickly. It only gives a speed-up for instances with a small dimension: if $n<9d^2$, it calls the Simplex algorithm. 
+The SampLP algorithm (\ref{alg:samplp}) was introduced by Clarkson\cite{clarkson1988vegas}. This randomized Las Vegas algorithm only gives a speed-up for instances with a small dimension. Examples of these type of instances is the smallest enclosing circle problem and a Chebyshev approximation. For instances with a larger dimension ($n>9d^2$), the Simplex algorithm is called directly.
 
-%TODO: add computational complexity
+The algorithm first selects a random subset of constraints and then recursively calls itself. If the set of constraints is getting small, the Simplex algorithm is called, resulting in an optimal solution. The output vector $x$ of the recursive call is afterwards checked by looking whether it is violating any of the constraints. If no violations are found any more, the solution vector $x$ is correct and is returned. 
 
 \begin{algorithm}[h]
 \label{alg:samplp}
@@ -82,8 +81,7 @@ $S \gets \phi$\;
 	\Return{Simplex($H$)}\;
 }
 \Else{
-	$V \gets H$ \;
-	$S \gets \phi$ \;
+	$V \gets H$, $S \gets \phi$ \;
 	\While{$|V| > 0$}{
 		Choose $R\subset H\setminus S$ at random, with $|R| = r = min\{d\sqrt{n},|H\setminus S|\}$ \;
 		$x \gets SampLP(R\cup S)$ \;
@@ -96,10 +94,17 @@ $S \gets \phi$\;
 }
 \end{algorithm}
 
-\subsection{IterSampLP}
-The more sophisticated IterSampLP algorithm (\ref{alg:itersamplp}) was also introduced by Clarkson\cite{clarkson1995vegas}. It uses weighted constraints. For each iterative step it reweights the more interesting constraints to increase the probability of including such a constraint in the random sample.
+The set $V$ of constraints that violate $H$ is small: it is expected that it contains  $\frac{d(m-r+1)}{r-d}$ constraints. Using the Markov inequality this results in $Pr[|V|>2\sqrt{n}]\leq \frac{1}{2}$. Therefore, the while loop has an expected number of iterations of maximum 2. The set $S$ gets in each of the $d$ phases at most $2\sqrt{n}$ constraints. Therefore, the set $R \cup S$  never exceeds the size of $3d\sqrt{n}$. Checking the possible violation of constraints takes $O(d^2n)$. This results in a bound of $T(n) \leq 2dT(3d\sqrt{n})+O(d^2n)$, for $n>9d^2$. 
 
-%TODO: add computational complexity
+If $n<9d^2$ the simplex algorithm is called. This takes  $O(d)^{d/2+O(1)}$. 
+
+In total, this results into a complexity bound of
+\begin{equation}
+O(d^2n)+log(\frac{n}{d^2})^{log(d+2)}O(d)^{d/2+O(1)}
+\end{equation}
+
+\subsection{IterSampLP}
+The more sophisticated IterSampLP algorithm (\ref{alg:itersamplp}) was also introduced by Clarkson\cite{clarkson1995vegas}. It is also an algorithm which only gives a speed-up if the number of variables is small: if $n<9d^2$ the Simplex algorithm is called. The iterative IterSampLP uses weighted constraints. For each step it selects a random subset of constraints of size $9d^2$. Next, the Simplex algorithm is called using these values. The result of the Simplex call is used to reweigh the constraints that violate $x$. A constraint with a higher weight has a higher probability to be selected in the next random choosen set. 
 
 \begin{algorithm}[h]
 \label{alg:itersamplp}
@@ -124,13 +129,18 @@ $\forall h \in H, w_h \gets 1$ \;
 }
 \end{algorithm}
 
+The expected number of iterations of the while loop is $O(d log(n))$, since the total weight of minimum required constraints grows much faster than the total weight of all constraints, since they are more likely to violate result vector $x$. In the while loop the simplex algorithm is called. This takes $O(d)^{d/2+O(1)}$. Checking the violating constraints takes $O(dn)$. 
+
+This results in a complexity bound of:
+\begin{equation}
+O(d^2n log(n)) + d log(n)O(d)^{d/2+O(1)}
+\end{equation}
+\vfill
 \section{Experimental results}
 %benchmark miplib: which instances to choose?
-To test the performance of the three algorithms, two different methods are used. Because the simplex implementation is used by the two other methods, this algorithm is first tested  on a benchmark of linear programming instances. For this purpose, the benchmark MIPLIB 2010 \cite{KochEtAl2011} is used. Unfortunately, this benchmark could not be used to test the performance of SampLP and IterSampLP, because for all instances in this benchmark $n < 9d^2$. \\
-To test the performance of these two, a linear programming problem generator is used. This generator generates problems with uniformly random constraints and a random objective function. The feasibility of this generated problem is tested with Gurobi, and feasible instances are stored for later use. \\
-In this section the results of the runtime of simplex on the MIPLIB benchmark is shown first, and then the results of the runtime of the three methods on the randomly generated instances.
+To test the performance of the Linear Programming algorithms, two different methods are used: by using benchmarks and by generating random graphs.
 
-The runtime results for SimplexApache on instances of MIPLIB can be seen in table \ref{tab:miplibresults} and in figure \ref{fig:miplibresults_n} and \ref{fig:miplibresults_d}. Only a small subset of the benchmark is used to test the performance of SimplexApache. The choice of this subset was based upon problem size, and alphabetic order. 
+First of all, the Simplex implementation of Apache is tested by using the benchmark MIPLIB 2010 \cite{KochEtAl2011}. This benchmark has Mixed Integer Problems. We are only considering continuous problems. Luckily, next to the integer objective also the LP (continuous) objective is provided for each problem instance. The Gurobi implementation is assumed to be correct and was previously tested by others using the MIPLIB benchmark. The runtime results for SimplexApache on instances of MIPLIB can be seen in table \ref{tab:miplibresults} and in figure \ref{fig:miplibresults_n} and \ref{fig:miplibresults_d}. Since the benchmark instances are very large and therefore require lots of time to test, only a small subset of the benchmark is used to test the performance of SimplexApache. The choice of this subset was based upon problem size and alphabetic order. Next to recording the required time, the solutions were also checked for correctness. This was the case for all problem instances. 
 
 \begin{figure}[h!]
 \includegraphics[width=\columnwidth]{../Results/miplib_apache_n.pdf}
@@ -143,9 +153,16 @@ The runtime results for SimplexApache on instances of MIPLIB can be seen in tabl
 \label{fig:miplibresults_d}
 \end{figure}
 
+Unfortunately, this benchmark could not be used to test the performance of SampLP and IterSampLP, because for all instances in this benchmark $n < 9d^2$. 
+
+Therefore, to test the performance of the randomized algorithms, a linear programming problem generator is used. This generator generates problems with uniformly random constraints and a random objective function. The feasibility of each generated problem is tested with Gurobi, and feasible instances are stored for later use.
+
 %aantal iteraties binnen simplexApache voor sampleLP & iterSampLP
-For comparing the performance of SimplexApache, SampLP and IterSamLP, the following method is used. First a set of feasible problem instances was randomly generated, with $d$ ranging from $2$ to $9$, and with $n = 10d^3$, so $n > 9d^2$ always holds. For each value of $d$, four linear programming problems were generated. For the random methods, the algorithm was repeated $100$ times, to calculate an average runtime. Runtime is measured in two ways: the total runtime and the simplex runtime. Because SampLP and IterSampLP both call Simplex for small instances of the original problem. By measuring the time Simplex is running, a comparison can be made that is less dependent on the implementation of SampLP and IterSampLP. \\
-The results can be seen in table \ref{tab:relativeresults} and the corresponding figures \ref{fig:totalruntime}, \ref{fig:simplexruntime} and \ref{fig:simplexruntime_relative_simplex}. In the figures, the runtime is only compared with $n$, the number of constraints and no longer with $d$. This is because $n$ depends on $d$. With this set of problems, only small values for $d$ are taken into account.
+With the generator first a set of feasible problem instances was randomly generated, with $d$ ranging from $2$ to $9$, and with $n = 10d^3$, so $n > 9d^2$ always holds. For each value of $d$, four linear programming problems were generated. 
+
+Next, the algorithms are run given these problem instances. Each algorithm was repeated $100$ times for each problem instance and the results were used to calculate an average runtime. Runtime is measured in two ways: the total runtime and the Simplex runtime. The Simplex runtime is defined as the time the SimplexApache algorithm is ran in total. SampLP and IterSampLP both call Simplex for small instances of the original problem. By measuring the time Simplex is running, a comparison can be made that is less dependent on the implementation of SampLP and IterSampLP.
+
+The results can be seen in table \ref{tab:relativeresults} and the corresponding figures \ref{fig:totalruntime}, \ref{fig:simplexruntime} and \ref{fig:simplexruntime_relative_simplex}. In the figures, the runtime is only compared with $n$, the number of constraints and no longer with $d$. This is because $n$ depends on $d$ ($n=10d^3$). 
 
 \begin{figure}[h!]
 \includegraphics[width=\columnwidth]{../Results/totalruntime.pdf}
@@ -161,25 +178,25 @@ The results can be seen in table \ref{tab:relativeresults} and the corresponding
 
 \begin{figure}[h!]
 \includegraphics[width=\columnwidth]{../Results/simplexruntime_relative_simplex.pdf}
-\caption{Runtime results for SimplexApache, SampLP and IterSampLP on the randomly generated problems. Only the time Simplex is running is measured. The runtime of SampLP and IterSampLP is plotted against the runtime of SimplexApache as a percentage.}
+\caption{Runtime results for SampLP and IterSampLP on the randomly generated problems. Only the time Simplex is running is measured. The runtime of SampLP and IterSampLP is plotted against the runtime of SimplexApache as a percentage.}
 \label{fig:simplexruntime_relative_simplex}
 \end{figure}
-
-
-
+\vfill
 \section{Analysis of results}
-Compare between methods: runtime and asymptotic bounds.
+From figure \ref{fig:miplibresults_n} it can be concluded that the Simplex runtime is generally higher for a larger number of constraints. The relation between $n$ and the required time seems to be quite polynomial, as was expected from the runtime analysis of Simplex. 
 
-Moet dit hier ergens?:
+However, the plot showing the dimension against the time \ref{fig:miplibresults_d} doesn't exactly seem to follow this polynomial bound. For values of $d$ smaller than 5000 it somewhat holds, but for the 2 larger values of $d$ in the considered benchmark ($d=18866$ and $d=22641$), this relation doesn't hold: the running time is much lower than you would expect if there really is a polynomial relationship. It might be the case that - besides values for $d$ and $n$ instances can be marked "easy" or "difficult", for example depending on the number of zeros in the matrix $A$ and the maximum and minimum values.
 
-The SampLP performs in our experiments better than IterSampLP. This is as expected if you look into the runtime analysis. For instances with larger values for $n$, IterSampLP theoretically should perform better than SampLP. However, these instances are such large that they are not runnable on a simple machine without generating Out Of Memory or Heap Space errors. 
-\textbf{TODO schets hiervan toevoegen}
+In figure \ref{fig:totalruntime} the runtime of the SimplexApache, SampLP and IterSampLP is considered for our own generated instances. Plotted on a logscale, it can be concluded that the SimplexApache implementation does not behave polynomially on average for our examples. The SampLP and IterSampLP do correctly show their logarithmic complexity bounds. 
 
+The runtime was also considered by the time the Simplex algorithm was running. These results are shown in figure \ref{fig:simplexruntime} and \ref{fig:simplexruntime_relative_simplex}. It can be seen that the SampLP algorithm only requires $8\%$ of the Simplex running time on average compared to Simplex Apache. IterSampLP requires a bit more Simplex time ($19\%$), since it is called in every iterative step to compute the optimal solution of the random subset.
+
+SampLP performs in our experiments better than IterSampLP. This is as expected if you look into the runtime analysis. For instances with larger values for $n$, IterSampLP theoretically should perform better than SampLP. However, these instances are such large that they are not runnable on a simple machine without generating Out Of Memory or Heap Space errors.
 
 \section{Discussion of the benefit of randomization for the problem}
-It has been shown that the randomized algorithms give an enormous speed-up compared to the Apache Simplex implementation. It is therefore useful to use the randomized versions. However, the presented randomized algorithms do not work for all instances. It only gives a speed-up if $n>9d^2$. Else, the Simplex algorithm is called immediately. This requires very specific problem instances with small dimensions. The smallest enclosing circle problems are for example perfectly solvable with randomized algorithms.
+It has been shown that the randomized algorithms give an enormous speed-up compared to the Apache Simplex implementation. It is therefore useful to use the randomized versions. However, the presented randomized algorithms do not work for all instances. It only gives a speed-up if $n>9d^2$. Else, the Simplex algorithm is called immediately. This requires very specific problem instances with small dimensions. The smallest enclosing circle problems are for example perfectly solvable with randomized algorithms, since these always have a dimension of 3.
 
-Although randomized algorithms provide a speed-up, a professional LP solver like Gurobi still performs faster for instances with a large $n$. The randomized algorithms might be improved by using the Gurobi solver instead of calling the Simplex algorithm. For larger $n$ this should give a speed-up, since the Gurobi solver should be more optimized than a general Simplex optimization. If then the runtime of the randomized algorithms and Gurobi is plotted \ref{fig:gurobiruntime}, it can be seen that Gurobi still performs better than the randomized algorithms. Concluding: the randomized algorithms do not outperform a professional solver like Gurobi (for large $n$). 
+Although randomized algorithms provide a speed-up, a professional LP solver like Gurobi still performs better for instances with a large $n$. The randomized algorithms might be improved by using the Gurobi solver instead of calling the Simplex algorithm. For larger $n$ this should give a speed-up, since the Gurobi solver should be more optimized than a general Simplex optimization. If then the runtime of the randomized algorithms and Gurobi is plotted (\ref{fig:gurobiruntime}), it can be seen that Gurobi still performs better than the randomized algorithms. Concluding: the randomized algorithms do not outperform a professional solver like Gurobi (for large $n$). 
 
 \begin{figure}[h!]
 \includegraphics[width=\columnwidth]{../Results/gurobi_runtime.pdf}
@@ -188,8 +205,15 @@ Although randomized algorithms provide a speed-up, a professional LP solver like
 \end{figure}
 
 \section{Conclusions}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean lorem magna, tincidunt quis ligula nec, fringilla dignissim est. Ut commodo justo quam, ac imperdiet diam tempor sit amet. Cras sollicitudin consectetur nisi in gravida. In ullamcorper sed elit ac ultrices. Nam elementum scelerisque dui, at molestie tortor imperdiet auctor. Nunc finibus lacus ac diam laoreet, sit amet dignissim lectus dictum. Aenean quis tincidunt nibh. Maecenas fermentum ornare purus, sed tincidunt nulla fringilla quis. Nunc eget viverra nibh, eu placerat nibh. Vivamus placerat facilisis malesuada. Vestibulum vestibulum suscipit lorem at pulvinar.
 
+Quisque accumsan vehicula finibus. Pellentesque at aliquet eros. Etiam sollicitudin mi sit amet mi maximus, eget mollis leo tempus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed venenatis purus. Mauris sollicitudin sapien nec dolor porttitor efficitur. Pellentesque eget tortor eros. Vivamus egestas augue quis leo gravida, eget ullamcorper neque malesuada. Nullam sit amet metus eros. Fusce cursus nisl magna, nec volutpat odio porta quis. Pellentesque congue diam eget lorem sollicitudin lobortis. Praesent augue augue, accumsan elementum rhoncus sit amet, ultrices ut nisl. Cras eget tellus euismod eros elementum bibendum. Nunc feugiat dignissim egestas.
 
+Nullam maximus sagittis eros, ut gravida quam tempus nec. Etiam gravida mollis purus, eu bibendum massa condimentum a. Vivamus tempor blandit ex in suscipit. Nullam tempus magna ligula, non dignissim libero tincidunt sit amet. Nulla bibendum vitae dui vitae luctus. Ut ac ipsum tincidunt, posuere lorem placerat, cursus tellus. Nunc mattis, elit quis bibendum tempor, mi sem varius orci, vitae ultricies odio lectus eu justo. Nam efficitur, risus eu gravida iaculis, neque ex facilisis ante, non sollicitudin elit libero vel nisi. Sed non scelerisque nunc.
+
+Suspendisse porttitor, ante quis fringilla accumsan, lacus magna egestas lorem, vitae consequat tellus nunc vel dui. Cras vitae mi nisi. Maecenas venenatis orci eu ipsum scelerisque vehicula. Morbi interdum facilisis turpis, a dictum sapien ullamcorper quis. Suspendisse ut luctus lacus. Nullam ac iaculis metus. Vestibulum tempor est non massa eleifend vestibulum. Duis in lectus fringilla, sagittis nisi quis, dignissim ante.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ullamcorper enim vel nisl semper fermentum. Pellentesque gravida velit eget libero laoreet pretium. Fusce id maximus ligula. Aliquam lectus tellus, vestibulum eget malesuada a, finibus a tellus. Mauris ut mattis nisl. Mauris vitae scelerisque leo, hendrerit dapibus ligula. Quisque dolor sapien, convallis ut diam non, pellentesque pellentesque elit. In elementum, justo et iaculis ornare, nunc felis facilisis nunc, sagittis placerat leo lacus consectetur diam. Sed sagittis ultrices justo eu sodales. Vivamus erat arcu, auctor in semper eu, hendrerit quis quam. Nam gravida convallis elit non interdum. Nunc venenatis lectus quis nisl pharetra, a pulvinar ex viverra. Nulla molestie dolor vitae egestas consectetur. Maecenas non eleifend ligula.
 \bibliographystyle{abbrv}
 \bibliography{sigproc}  % sigproc.bib is the name of the Bibliography in this case
 \balancecolumns
