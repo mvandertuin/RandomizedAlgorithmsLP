@@ -36,33 +36,19 @@ Section 5, the analysis, is done neatly. This section gives an answer to Exercis
 \section{Choice Coordination Problem}
 For CPP we have several concerns. First of all, the algorithm for ASYNCH-CPP is given, but it is not analysed. It is said that the analysis for SYNCH-CCP also holds for ASYNCH-CCP. But ASYNCH-CPP is not tested, nor discussed, nor shown that it is equal to SYNCH-CPP, so we are not convinced. Is it even implemented? \\
 In section 2 the probability of success of CPP is mentioned, but this is not explained. In the results this success probability is not tested. And what conclusions can be drawn from the fact that the number of iterations closely resemble a geometric distribution with $p=\frac{1}{2}$? \\
-
-
-Complexity methods are given but not proven.
-
-
-
-CPP is not discussed theoretically. 
-
-No plot is included with n on the horizontal axe to convince that the running time is constant for CCP. Why $n=m=2$? This is not explained
+In \cite{motwani2010randomized} $n=m=2$ is chosen to keep the analysis of SYNCH-CPP simple. In this report no theoretical analysis of SYNCH-CPP is included. But in the runtime analysis of SYNCH-CPP this choice $n=m=2$ is also made. Why is this done? It would be interesting to see the performance of the algorithm for other values. Secondly, it is stated that the algorithm requires a constant number of steps. But because the algorithm is tested for only one value of $n$, this is not shown from the experimental results. 
 
 \section{Byzantine Agreement}
-Complexity methods are given but not proven.
-Choice of $L$, $H$, and $G$ for ByzGen is not explained, nor are these variables explained
+In section 2, it is said that ByzGen runs in constant time, but this is not shown. In the results it is shown for $t=n/4$, for several values of $n$. But why is $t=n/4$ chosen? In the theoretical analysis it is said that the algorithm only works for values $t<n/6$, and with the choice of $L$, $H$, and $G$, $t=n/8$ would be expected. No conclusion is drawn from the fact that this behavior does not agree with the analysis. If according to the analysis the algorithm should not work for these values, why do the results show else? \\
+In section 3, the choice of $L$, $H$, and $G$ for ByzGen is not explained, nor are these variables explained. It is not clear for us what these variables mean. The values are taken from \cite{motwani2010randomized}. Also as mentioned in section 5, algorithm 3 does not stop. It would be helpful if section 3 referred to section 5 for the halting procedure.\\
+In all figures in the experimental results, the algorithms are run multiple times to derive averages, which is good. In figure 5 it does not seem that the algorithm is run more than once per value of $n$. This is recommended. \\
+In \cite{rabin1983randomized} the ByzGen was originally published (\cite{motwani2010randomized} refers to this paper). This report does not refer to this paper. In \cite{rabin1983randomized} it is shown that with a correct choice of $L$, $H$, and $G$, the best bound to get is $t < n/4$, although the report claims that this can be no better than $t < n/6$. We think that this conclusion is drawn wrongly from the last part of section 5. \\
+In \cite{rabin1983randomized} several other interesting conclusions are drawn. For instance the maximum number of messages in ByzGen is max $O(n^2)$. This could have been taken into account in the experimental analysis.
 
-Why is t=4/n chosen, with t<n/8 as requirement. n<6 is derived in the analysis. Why is no conclusions drawn from this.
-Why do the results show successful instances for t<n/8<n/6<n/4?
-
-Algorithm 3 does not stop. This is explained later, so refer to it.
-
-Figure 5: these are not averages. Why not?
-
-The number of messages is max $O(n^2)$
-
-References to original publisher of byzgen is missing (only referred to the book).
-In this reference it is shown that t<n/4 is the bound. This is a better bound than t=n/6. The conclusion that no better bound can be found is thus incorrect.
-
-Results are not checked for validity. Probability of success is not discussed, only for $t=n/4$
-
+\section{General Assessment}
+Our first impression of the report was positive. The report was easy to read; the explanation of the problems, the experiment, and the theoretical analysis was done well. When we started to look more carefully, there arose some concerns. CPP is not tested well enough, and not discussed theoretically. The theoretical analysis in section 5 is done neatly, but the conclusion is not correct according to \cite{rabin1983randomized}. We would expect the authors to have read this paper.
+\bibliographystyle{abbrv}
+\bibliography{sigproc}  % sigproc.bib is the name of the Bibliography in this case
+\balancecolumns
 
 \end{document}
