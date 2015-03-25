@@ -23,36 +23,55 @@ Koos van der Linden \\ \affaddr{4133145}
 Marieke van der Tuin \\ \affaddr{4079299}
 }
 \maketitle
+\section{Structure}
 
-Readable on its own
+The report is readable on its own. The problem is introduced, variables are explained. But not very clearly.
 
 Problem introduction and motivation (motivation missing)
 Introduction too short
 
 Pseudocode is useful
-Complexity methods are given. 
+Complexity methods are given but not proven.
 
-Asynch-CPP is not tested, nor discussed, nor shown that it is equal to Synch-CPP, so we are not convinced.
 
 Experimental Plots are included.
 
-Results are not compared with asymtoptic bounds, and not with each other.
-No plot is included with n on the horizontal axe to convince that the running time is constant
+
 
 Theoretical analysis before the experimental results
-
-Why is t=4/n chosen, with t<n/8 as requirement. n<6 is derived in the analysis. Why is no conclusions drawn from this
-
-Figure 5: these are not averages. Why not?
 
 Discussion of the benefit of randomization for the problem (missing)
 
 What is the connection with the analysis and the results
 
+Algorithm 3 does not stop. This is explained later, so refer to it.
+
+
+
+
+\section{Content}
+
+
+Asynch-CPP is not tested, nor discussed, nor shown that it is equal to Synch-CPP, so we are not convinced. Is it even implemented?
+
+CPP is not discussed theoretically. 
+
+Probability of success of CPP is mentioned but not explained
+
+Choice of $L$, $H$, and $G$ for ByzGen is not explained, nor are these variables explained
+
+Why is t=4/n chosen, with t<n/8 as requirement. n<6 is derived in the analysis. Why is no conclusions drawn from this.
+Why do the results show successful instances for t<n/8<n/6<n/4?
+
+Figure 5: these are not averages. Why not?
+
+The number of messages is max $O(n^2)$
+
 References to original publisher of byzgen is missing (only referred to the book).
 In this reference it is shown that t<n/4 is the bound. This is a better bound than t=n/6. The conclusion that no better bound can be found is thus incorrect.
 
-The number of messages is max O(n^2)
-
+Results are not compared with asymptotic bounds, and not with each other.
+Results are not checked for validity. Probability of success is not discussed.
+No plot is included with n on the horizontal axe to convince that the running time is constant for CCP. Why $n=m=2$? This is not explained
 
 \end{document}
